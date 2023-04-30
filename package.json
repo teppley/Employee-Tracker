@@ -1,13 +1,12 @@
 {
   "name": "employee-tracker",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "employee-tracker",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  
   "dependencies": {
     "console.table": "^0.10.0",
     "express": "^4.17.1",

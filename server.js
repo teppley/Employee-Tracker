@@ -129,5 +129,34 @@ function viewAllEmployees() {
     });
 };
 
+// Add departments
+function addDepartment() {
+    inquirer.prompt([
+        {
+            name: "department_name",
+            type: "input",
+            message: "Please enter the name of the department you want to add to the database."
+        }
+    ]).then((answer) => {
+
+    const sql = `INSERT INTO department (department_name)
+                VALUES (?)`;
+    const params = [answer.department_name];
+    db.query(sql, params, (err, result) => {
+    if (err) throw err;
+    console.log('The new department has been added successfully to the database.');
+
+        db.query(`SELECT * FROM department`, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message })
+                return;
+            }
+            console.table(result);
+            startPrompt();
+        });
+    });
+});
+};
+
 
 startPrompt();
