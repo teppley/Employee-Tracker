@@ -8,15 +8,18 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 // Express middleware
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Default response for any other request (Not Found)
+
 app.use((req, res) => {
   res.status(404).end();
 });
 
 // Start server after DB connection
+
 db.connect(err => {
   if (err) throw err;
   app.listen(PORT, () => {});
@@ -30,6 +33,7 @@ db.connect(err => {
 
 
 // Start the prompt functions
+
 function startPrompt() {
     inquirer.prompt({
             type: 'list',
@@ -83,6 +87,7 @@ function startPrompt() {
  };
 
  // View all departments
+
 function viewAllDepartments() {
     const sql = `SELECT * FROM department`;
     db.query(sql, (err, result) => {
@@ -96,6 +101,7 @@ function viewAllDepartments() {
 };
 
 // View all roles
+
 function viewAllRoles() {
     const sql = `SELECT * FROM role`;
     db.query(sql, (err, result) => {
@@ -109,6 +115,7 @@ function viewAllRoles() {
 };
 
 // View all employees
+
 function viewAllEmployees() {
     const sql = `SELECT employee.id,
                 employee.first_name,
@@ -130,12 +137,13 @@ function viewAllEmployees() {
 };
 
 // Add departments
+
 function addDepartment() {
     inquirer.prompt([
         {
             name: "department_name",
             type: "input",
-            message: "Please enter the name of the department you want to add to the database."
+            message: "Please enter the name of the department you want to add."
         }
     ]).then((answer) => {
 
@@ -144,7 +152,7 @@ function addDepartment() {
     const params = [answer.department_name];
     db.query(sql, params, (err, result) => {
     if (err) throw err;
-    console.log('The new department has been added successfully to the database.');
+    console.log('The new department has been added successfully.');
 
         db.query(`SELECT * FROM department`, (err, result) => {
             if (err) {
@@ -155,6 +163,42 @@ function addDepartment() {
             startPrompt();
         });
     });
+});
+};
+
+// Add a role
+
+function addRole() {
+    inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "Please enter the title of role you want to add."
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "Please enter the salary associated with the role you want to add. (no dots, space or commas)"
+        },
+        {
+            name: "department_id",
+            type: "number",
+            message: "Please enter the department's id associated with the role you want to add."
+        }
+    ]).then(function (response) {
+        db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [response.title, response.salary, response.department_id], function (err, data) {
+            if (err) throw err;
+            console.log('The new role has been added successfully.');
+
+            db.query(`SELECT * FROM role`, (err, result) => {
+                if (err) {
+                    res.status(500).json({ error: err.message })
+                    startPrompt();
+                }
+                console.table(result);
+                startPrompt();
+            });
+        })
 });
 };
 
