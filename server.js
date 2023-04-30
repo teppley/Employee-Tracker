@@ -81,3 +81,29 @@ function startPrompt() {
         }
     })
  };
+
+ // View all departments
+function viewAllDepartments() {
+    const sql = `SELECT * FROM department`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.message })
+            return;
+        }
+        console.table(result);
+        startPrompt();
+    });
+};
+
+// View all roles
+function viewAllRoles() {
+    const sql = `SELECT * FROM role`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.message })
+            return;
+        }
+        console.table(result);
+        startPrompt();
+    });
+};
