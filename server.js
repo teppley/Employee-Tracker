@@ -136,7 +136,7 @@ function viewAllEmployees() {
     });
 };
 
-// Add departments
+// Add department
 
 function addDepartment() {
     inquirer.prompt([
@@ -191,6 +191,79 @@ function addRole() {
             console.log('The new role has been added successfully.');
 
             db.query(`SELECT * FROM role`, (err, result) => {
+                if (err) {
+                    res.status(500).json({ error: err.message })
+                    startPrompt();
+                }
+                console.table(result);
+                startPrompt();
+            });
+        })
+});
+};
+
+// Add employee
+
+function addEmployee() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "Please enter the first name of the employee you want to add."
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "Please enter the last name of the employee you want to add."
+        },
+        {
+            name: "role_id",
+            type: "number",
+            message: "Please enter the role id associated with the employee you want to add. Enter ONLY numbers."
+        },
+        {
+            name: "manager_id",
+            type: "number",
+            message: "Please enter the manager's id associated with the employee you want to add. Enter ONLY numbers."
+        }
+
+    ]).then(function (response) {
+        db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [response.first_name, response.last_name, response.role_id, response.manager_id], function (err, data) {
+            if (err) throw err;
+            console.log('The new employee entered has been added successfully.');
+
+            db.query(`SELECT * FROM employee`, (err, result) => {
+                if (err) {
+                    res.status(500).json({ error: err.message })
+                    startPrompt();
+                }
+                console.table(result);
+                startPrompt();
+            });
+        })
+});
+};
+
+// Update employee role
+
+function updateEmployeeRole() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "Please enter the first name of the employee you want update."
+        },
+        {
+            name: "role_id",
+            type: "number",
+            message: "Please enter the new role number id associated with the employee you want to update. Enter ONLY numbers."
+        }
+    ]).then(function (response) {
+        db.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.first_name], function (err, data) {
+            if (err) throw err;
+            console.log('The new role entered has been added successfully.');
+
+            db.query(`SELECT * FROM employee`, (err, result) => {
                 if (err) {
                     res.status(500).json({ error: err.message })
                     startPrompt();
