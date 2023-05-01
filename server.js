@@ -37,6 +37,7 @@ db.connect(err => {
   console.log('██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗')
   console.log('██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║')
   console.log('╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝')
+
 // Start the prompt functions
 
 function startPrompt() {
@@ -280,5 +281,35 @@ function updateEmployeeRole() {
 });
 };
 
+// Update employee manager
+
+function updateEmployeeManager() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "Please enter the first name of the employee you want update in the database."
+        },
+        {
+            name: "manager_id",
+            type: "number",
+            message: "Please enter the new manager's id number associated with the employee you want to update in the database. Enter ONLY numbers."
+        }
+    ]).then(function (response) {
+        db.query("UPDATE employee SET manager_id = ? WHERE first_name = ?", [response.manager_id, response.first_name], function (err, data) {
+            if (err) throw err;
+            console.log("The new manager's id entered has been added successfully to the database.");
+
+            db.query(`SELECT * FROM employee`, (err, result) => {
+                if (err) {
+                    res.status(500).json({ error: err.message })
+                    startPrompt();
+                }
+                console.table(result);
+                startPrompt();
+            });
+        })
+});
+};
 
 startPrompt();
