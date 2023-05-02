@@ -45,7 +45,20 @@ function startPrompt() {
             type: 'list',
             name: 'menu',
             message: 'Choose An Option:',
-            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Update An Employee Manager', 'Delete Department', 'Delete Role', 'Delete Employee', 'Quit'], 
+            choices: [
+            'View All Departments', 
+            'View All Roles', 
+            'View All Employees', 
+            'Add A Department', 
+            'Add A Role', 
+            'Add An Employee', 
+            'Update An Employee Role', 
+            'Update An Employee Manager', 
+            'Delete Department', 
+            'Delete Role', 
+            'Delete Employee', 
+            'Quit'
+        ], 
 
     }).then( answer => {
         switch (answer.menu) {
